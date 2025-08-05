@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阿布古樹茶</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            background-color: #f8f6f1;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        // Simple UI components since we don't have the shadcn/ui components
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-white rounded-2xl shadow-md ${className}`}>
+                {children}
+            </div>
+        );
+
+        const CardContent = ({ children, className = "" }) => (
+            <div className={`p-4 ${className}`}>
+                {children}
+            </div>
+        );
+
+        const Button = ({ children, onClick, className = "", variant = "default" }) => {
+            const baseClasses = "px-4 py-2 rounded-lg font-medium transition-colors";
+            const variantClasses = variant === "outline" 
+                ? "border border-gray-300 text-gray-700 hover:bg-gray-50" 
+                : "bg-blue-600 text-white hover:bg-blue-700";
+            
+            return (
+                <button 
+                    className={`${baseClasses} ${variantClasses} ${className}`}
+                    onClick={onClick}
+                >
+                    {children}
+                </button>
+            );
+        };
+
+        const Tabs = ({ defaultValue, children, className = "" }) => (
+            <div className={className}>
+                {children}
+            </div>
+        );
+
+        const TabsList = ({ children, className = "" }) => (
+            <div className={`flex space-x-1 p-1 bg-gray-100 rounded-lg ${className}`}>
+                {children}
+            </div>
+        );
+
+        const TabsTrigger = ({ value, children, className = "" }) => (
+            <button className={`flex-1 px-3 py-2 text-sm rounded-md transition-colors ${className}`}>
+                {children}
+            </button>
+        );
+
+        const teas = [
+            {
+                name: "阿布·易武頭春古樹",
+                desc: "花香細膩，湯感綿滑",
+                year: "2025",
+                price: 4200,
+                image: "../image/tea tree-1.jpg",
+            },
+            {
+                name: "阿布·老班章野放生茶",
+                desc: "霸氣強烈，回甘持久",
+                year: "2022",
+                price: 8800,
+                image: "../image/tea tree-2.jpg",
+            },
+            {
+                name: "阿布·冰島柔香熟茶",
+                desc: "柔甜圓潤，陳香沉穩",
+                year: "2021",
+                price: 3600,
+                image: "../image/tea tree-3.jpg",
+            },
+        ];
+
+        function AbuTeaApp() {
+            const [cart, setCart] = useState([]);
+
+            const addToCart = (tea) => {
+                setCart([...cart, tea]);
+            };
+
+            const handleCheckout = () => {
+                // 模擬微信支付流程
+                alert("跳轉至微信支付頁面...");
+            };
+
+            return (
+                <div className="p-4 font-serif bg-[#f8f6f1] min-h-screen">
+                    <div className="text-center">
+                        <img src="../image/logo3.jpg" alt="Abu Logo" className="mx-auto h-16 mb-2" />
+                        <h1 className="text-2xl font-bold text-[#002a48]">阿布古樹茶</h1>
+                        <p className="text-sm text-[#4a4a4a] mt-1">
+                            一葉古樹，百年風骨，來自山林的茶之語言
+                        </p>
+                    </div>
+
+                    <Tabs defaultValue="all" className="mt-6">
+                        <TabsList className="grid grid-cols-4 bg-transparent text-[#002a48]">
+                            <TabsTrigger value="all">所有茶</TabsTrigger>
+                            <TabsTrigger value="raw">生茶</TabsTrigger>
+                            <TabsTrigger value="ripe">熟茶</TabsTrigger>
+                            <TabsTrigger value="journal">茶誌</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
+
+                    {teas.map((tea, index) => (
+                        <Card key={index} className="mt-6 bg-white rounded-2xl shadow-md">
+                            <CardContent className="p-4">
+                                <div className="flex items-center gap-4">
+                                    <img
+                                        src={tea.image}
+                                        alt={tea.name}
+                                        className="w-20 h-20 object-cover rounded-full"
+                                    />
+                                    <div>
+                                        <h2 className="text-lg font-semibold text-[#002a48]">
+                                            {tea.name}
+                                        </h2>
+                                        <p className="text-sm text-gray-500">{tea.desc}</p>
+                                        <p className="text-sm text-[#002a48]">NT${tea.price}</p>
+                                        <Button
+                                            variant="outline"
+                                            className="mt-2 text-xs"
+                                            onClick={() => addToCart(tea)}
+                                        >
+                                            加入購物車
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    ))}
+
+                    <h3 className="text-lg font-semibold text-[#002a48] mt-8 mb-4">購物車</h3>
+                    <Card className="bg-white rounded-xl p-4 shadow-sm">
+                        {cart.length === 0 ? (
+                            <p className="text-sm text-gray-500">購物車是空的</p>
+                        ) : (
+                            <>
+                                {cart.map((item, i) => (
+                                    <p key={i} className="text-sm text-[#002a48]">
+                                        {item.name} - NT${item.price}
+                                    </p>
+                                ))}
+                                <Button
+                                    className="mt-2 w-full bg-[#002a48] text-white"
+                                    onClick={handleCheckout}
+                                >
+                                    微信支付結帳
+                                </Button>
+                            </>
+                        )}
+                    </Card>
+                </div>
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<AbuTeaApp />);
+    </script>
+</body>
+</html> 
